@@ -8,6 +8,8 @@ function PlayState:enter( params )
     self.ball = params.ball
     self.level = params.level
     self.highScores = params.highScores
+    
+    self.recoverPoints = params.recoverPoints
 
     self.ball.dx = math.random( -200, 200 )
     self.ball.dy = math.random( -50, -60 )
@@ -52,6 +54,12 @@ function PlayState:update( dt )
 
             brick:hit()
 
+            if self.score > self.recoverPoints then
+                self.health = math.min( 3, self.health + 1 )
+                self.recoverPoints = math.min( 100000, self.recoverPoints * 2 )
+                gSounds[ "recover" ]:play()
+            end
+
             if self:checkVictory() then
                 gSounds[ "victory" ]:play()
 
@@ -61,7 +69,8 @@ function PlayState:update( dt )
                     health = self.health,
                     score = self.score,
                     ball = self.ball,
-                    highScores = self.highScores
+                    highScores = self.highScores,
+                    recoverPoints = self.recoverPoints
                 } )
             end
 
@@ -109,7 +118,9 @@ function PlayState:update( dt )
                 bricks = self.bricks,
                 health = self.health,
                 score = self.score,
-                highScores = self.highScores
+                highScores = self.highScores,
+                level = self.level,
+                recoverPoints = self.recoverPoints
             } )
         end
     end
