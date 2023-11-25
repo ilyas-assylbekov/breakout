@@ -2,6 +2,10 @@ StartState = Class{ __includes = BaseState }
 
 local highlighted = 1
 
+function StartState:enter( params )
+    self.highScores = params.highScores
+end
+
 function StartState:update( dt )
     
     if love.keyboard.wasPressed( "up" ) or love.keyboard.wasPressed( "down" ) or love.keyboard.wasPressed( "w" ) or love.keyboard.wasPressed( "s" ) then
@@ -18,7 +22,8 @@ function StartState:update( dt )
                 bricks = LevelMaker.createMap( 1 ),
                 health = 3,
                 score = 0,
-                level = 1
+                level = 1,
+                highScores = self.highScores
             } )
         else
             gStateMachine:change( "high-scores", {
