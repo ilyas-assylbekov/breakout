@@ -9,16 +9,20 @@ function ServeState:enter( params )
     self.highScores = params.highScores
 
     self.recoverPoints = params.recoverPoints
+    self.brickHits = 0
 
-    self.ball = Ball()
-    self.ball.skin = math.random( 7 )
+    self.balls = {}
+    ball1 = Ball( math.random( 7 ) )
+    table.insert( self.balls, ball1 )
 end
 
 function ServeState:update( dt )
     
     self.paddle:update( dt )
-    self.ball.x = self.paddle.x + ( self.paddle.width / 2 )
-    self.ball.y = self.paddle.y - 8
+    for key, ball in pairs( self.balls ) do
+        ball.x = self.paddle.x + ( self.paddle.width / 2 )
+        ball.y = self.paddle.y - 8 
+    end
 
     if love.keyboard.wasPressed( "enter" ) or love.keyboard.wasPressed( "return" ) then
         
@@ -27,10 +31,11 @@ function ServeState:update( dt )
             bricks = self.bricks,
             health = self.health,
             score = self.score,
-            ball = self.ball,
+            balls = self.balls,
             level = self.level,
             highScores = self.highScores,
-            recoverPoints = self.recoverPoints
+            recoverPoints = self.recoverPoints,
+            brickHits = self.brickHits
         } )
 
     end
@@ -43,7 +48,9 @@ end
 
 function ServeState:render()
     self.paddle:render()
-    self.ball:render()
+    for key, ball in pairs( self.balls ) do
+        ball:render() 
+    end
 
     for key, brick in pairs( self.bricks ) do
         brick:render()
