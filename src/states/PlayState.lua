@@ -11,6 +11,7 @@ function PlayState:enter( params )
     
     self.recoverPoints = params.recoverPoints
     self.brickHits = params.brickHits
+    self.growPoints = params.growPoints
     self.powerups = {}
 
     for key, ball in pairs( self.balls ) do
@@ -53,6 +54,7 @@ function PlayState:update( dt )
             ball3.dy = math.random( -50, -60 )
             table.insert( self.balls, ball2 )
             table.insert( self.balls, ball3 )
+            gSounds[ "powerup" ]:play()
         end
     end
 
@@ -93,6 +95,19 @@ function PlayState:update( dt )
                     gSounds[ "recover" ]:play()
                 end
 
+                if self.score > self.growPoints then
+                    self.paddle.size = math.min( 4, self.paddle.size + 1 )
+                    if self.paddle.size == 2 then
+                        self.paddle.width = 64
+                    elseif self.paddle.size == 3 then
+                        self.paddle.width = 96
+                    elseif self.paddle.size == 4 then
+                        self.paddle.width = 128
+                    end
+                    self.growPoints = math.min( 100000, self.growPoints * 2 )
+                    gSounds[ "paddle-grow" ]:play()
+                end
+
                 if self.brickHits > 10 then
                     powerup = Powerup( math.random(9) )
                     table.insert( self.powerups, powerup )
@@ -110,6 +125,7 @@ function PlayState:update( dt )
                         balls = self.balls,
                         highScores = self.highScores,
                         recoverPoints = self.recoverPoints,
+                        growPoints = self.growPoints,
                         brickHits = self.brickHits
                     } )
                 end
@@ -141,7 +157,15 @@ function PlayState:update( dt )
             table.remove( self.balls, key )
 
             if #self.balls == 0 then
-                self.health = self.health - 1 
+                self.health = self.health - 1
+                self.paddle.size = math.max( 1, self.paddle.size - 1 )
+                if self.paddle.size == 1 then
+                    self.paddle.width = 32
+                elseif self.paddle.size == 2 then
+                    self.paddle.width = 64
+                elseif self.paddle.size == 3 then
+                    self.paddle.width = 96
+                end
             end
             gSounds[ "hurt" ]:play()
     
@@ -159,6 +183,7 @@ function PlayState:update( dt )
                     highScores = self.highScores,
                     level = self.level,
                     recoverPoints = self.recoverPoints,
+                    growPoints = self.growPoints,
                     brickHits = self.brickHits
                 } )
             end

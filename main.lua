@@ -52,6 +52,8 @@ function love.load()
         [ "recover" ] = love.audio.newSource( "sounds/recover.wav", "static" ),
         [ "high_score" ] = love.audio.newSource( "sounds/high_score.wav", "static" ),
         [ "pause" ] = love.audio.newSource( "sounds/pause.wav", "static" ),
+        [ "powerup" ] = love.audio.newSource( "sounds/powerup.wav", "static" ),
+        [ "paddle-grow" ] = love.audio.newSource( "sounds/paddle-grow.wav", "static" ),
 
         [ "music" ] = love.audio.newSource( "sounds/music.wav", "static" )
     }
