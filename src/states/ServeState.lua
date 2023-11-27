@@ -11,6 +11,7 @@ function ServeState:enter( params )
     self.recoverPoints = params.recoverPoints
     self.brickHits = params.brickHits
     self.growPoints = params.growPoints
+    self.keyPowerup = params.keyPowerup
 
     self.balls = {}
     ball1 = Ball( math.random( 7 ) )
@@ -37,7 +38,8 @@ function ServeState:update( dt )
             highScores = self.highScores,
             recoverPoints = self.recoverPoints,
             growPoints = self.growPoints,
-            brickHits = self.brickHits
+            brickHits = self.brickHits,
+            keyPowerup = self.keyPowerup
         } )
 
     end

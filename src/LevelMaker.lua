@@ -16,6 +16,7 @@ function LevelMaker.createMap( level )
     local numRows = math.random( 1, 5 )
     local numCols = math.random( 7, 13 )
     numCols = numCols % 2 == 0 and ( numCols + 1 ) or numCols
+    local keyBrick = math.random( 1, numRows * numCols )
 
     local highestTier = math.min( 3, math.floor( level / 5 ) )
     local highestColor = math.min( 5, level % 5 + 3 )
@@ -45,7 +46,13 @@ function LevelMaker.createMap( level )
                 skipFlag = not skipFlag
             end
 
-            b = Brick( ( x - 1 ) * 32 + 8 + ( 13 - numCols ) * 16, y * 16 )
+            if ( y * x == keyBrick ) then
+                b = KeyBrick( ( x - 1 ) * 32 + 8 + ( 13 - numCols ) * 16, y * 16 )
+                table.insert( bricks, b )
+                goto continue
+            else
+                b = Brick( ( x - 1 ) * 32 + 8 + ( 13 - numCols ) * 16, y * 16 )
+            end
 
             if alternatePattern and alternateFlag then
                 b.color = alternateColor1

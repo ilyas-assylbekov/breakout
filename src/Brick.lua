@@ -37,6 +37,7 @@ function Brick:init( x, y )
     self.tier = 0
     self.color = 1
 
+    self.isKeyBrick = false
     self.x = x
     self.y = y
     self.width = 32

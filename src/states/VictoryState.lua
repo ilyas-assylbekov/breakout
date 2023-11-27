@@ -30,7 +30,8 @@ function VictoryState:update( dt )
             highScores = self.highScores,
             recoverPoints = self.recoverPoints,
             brickHits = self.brickHits,
-            growPoints = self.growPoints
+            growPoints = self.growPoints,
+            keyPowerup = false
         })
     end
 

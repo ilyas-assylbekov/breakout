@@ -29,7 +29,8 @@ function love.load()
         [ "bricks" ] = GenerateQuadsBricks( gTextures[ "main" ] ),
         [ "hearts" ] = GenerateQuads( gTextures[ "hearts" ], 10, 9 ),
         [ "arrows" ] = GenerateQuads( gTextures[ "arrows" ], 24, 24 ),
-        [ "powerups" ] = GenerateQuadsPowerups( gTextures[ "main" ] )
+        [ "powerups" ] = GenerateQuadsPowerups( gTextures[ "main" ] ),
+        [ "key-brick" ] = GenerateKeyBrickQuad( gTextures[ "main" ] )
     }
 
     push:setupScreen( VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {

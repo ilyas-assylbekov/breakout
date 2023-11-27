@@ -1,5 +1,7 @@
 PlayState = Class{ __includes = BaseState }
 
+local timer = 0
+
 function PlayState:enter( params )
     self.paddle = params.paddle
     self.bricks = params.bricks
@@ -13,14 +15,18 @@ function PlayState:enter( params )
     self.brickHits = params.brickHits
     self.growPoints = params.growPoints
     self.powerups = {}
+    self.keyPowerup = params.keyPowerup
 
     for key, ball in pairs( self.balls ) do
         ball.dx = math.random( -200, 200 )
         ball.dy = math.random( -50, -60 ) 
     end
+
 end
 
 function PlayState:update( dt )
+
+    timer = timer + 1
 
     if self.paused then
         if love.keyboard.wasPressed( "space" ) then
@@ -31,8 +37,16 @@ function PlayState:update( dt )
         end
     elseif love.keyboard.wasPressed( "space" ) then
         self.paused = true
+        timer = timer - 1
         gSounds[ "pause" ]:play()
         return
+    end
+
+    if ( timer / 144 ) > 30 then
+        powerup = Powerup( 10 )
+        powerup.isKey = true
+        table.insert( self.powerups, powerup )
+        timer = 0
     end
 
     for key, powerup in pairs( self.powerups ) do
@@ -41,6 +55,9 @@ function PlayState:update( dt )
 
     for key, powerup in pairs( self.powerups ) do
         if powerup:collides( self.paddle ) then
+            if powerup.isKey then
+                self.keyPowerup = true
+            end
             table.remove( self.powerups, key )
             ball2 = Ball( math.random( 7 ) )
             ball2.x = self.paddle.x + ( self.paddle.width / 2 )
@@ -83,11 +100,18 @@ function PlayState:update( dt )
         for k, ball in pairs( self.balls ) do
 
             if brick.inPlay and ball:collides( brick ) then
-
-                self.score = self.score + ( brick.tier * 200 + brick.color * 25 )
     
-                brick:hit()
-                self.brickHits = self.brickHits + 1
+                if brick.isKeyBrick then
+                    if self.keyPowerup then
+                        brick:hit()
+                        self.brickHits = self.brickHits + 1
+                        self.keyPowerup = false
+                    end
+                else
+                    self.score = self.score + ( brick.tier * 200 + brick.color * 25 )
+                    brick:hit()
+                    self.brickHits = self.brickHits + 1
+                end
     
                 if self.score > self.recoverPoints then
                     self.health = math.min( 3, self.health + 1 )
@@ -110,6 +134,7 @@ function PlayState:update( dt )
 
                 if self.brickHits > 10 then
                     powerup = Powerup( math.random(9) )
+                    powerup.isKey = false
                     table.insert( self.powerups, powerup )
                     self.brickHits = 0
                 end
@@ -126,7 +151,7 @@ function PlayState:update( dt )
                         highScores = self.highScores,
                         recoverPoints = self.recoverPoints,
                         growPoints = self.growPoints,
-                        brickHits = self.brickHits
+                        brickHits = self.brickHits,
                     } )
                 end
     
@@ -150,6 +175,12 @@ function PlayState:update( dt )
             end 
         end
 
+    end
+
+    for key, powerup in pairs( self.powerups ) do
+        if powerup.y > VIRTUAL_HEIGHT then
+            table.remove( self.powerups, key )
+        end
     end
 
     for key, ball in pairs( self.balls ) do
@@ -184,7 +215,8 @@ function PlayState:update( dt )
                     level = self.level,
                     recoverPoints = self.recoverPoints,
                     growPoints = self.growPoints,
-                    brickHits = self.brickHits
+                    brickHits = self.brickHits,
+                    keyPowerup = self.keyPowerup
                 } )
             end
         end 

@@ -38,7 +38,8 @@ function PaddleSelectState:update( dt )
             level = 1,
             recoverPoints = 5000,
             brickHits = 0,
-            growPoints = 2000
+            growPoints = 2000,
+            keyPowerup = false
         })
     end
 
